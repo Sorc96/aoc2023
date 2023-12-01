@@ -1,0 +1,119 @@
+# Aoc 2023 day 01
+
+```elixir
+Mix.install([
+  {:kino_aoc, "~> 0.1"}
+])
+```
+
+## Input
+
+<!-- livebook:{"attrs":{"assign_to":"puzzle_input","day":"1","session_secret":"AOC_SESSION","year":"2023"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2023", "1", System.fetch_env!("LB_AOC_SESSION"))
+```
+
+## Solution
+
+```elixir
+defmodule Aoc do
+  def solve_a(input) do
+    input
+    |> String.split("\n", trim: true)
+    |> Enum.map(&parse_calibration_value/1)
+    |> Enum.sum()
+  end
+
+  def solve_b(input) do
+    input
+    |> String.split("\n", trim: true)
+    |> Enum.map(&parse_calibration_value_with_words/1)
+    |> Enum.sum()
+  end
+
+  defp parse_calibration_value(line) do
+    "#{find_digit(line)}#{find_digit(String.reverse(line))}"
+    |> String.to_integer()
+  end
+
+  defp parse_calibration_value_with_words(line) do
+    first = line |> replace_words_with_digits() |> find_digit()
+    last = line |> String.reverse() |> replace_reverse_words_with_digits() |> find_digit()
+
+    "#{first}#{last}"
+    |> String.to_integer()
+  end
+
+  defp replace_words_with_digits(line) do
+    String.replace(line, ~r/one|two|three|four|five|six|seven|eight|nine/, fn
+      "one" -> "1"
+      "two" -> "2"
+      "three" -> "3"
+      "four" -> "4"
+      "five" -> "5"
+      "six" -> "6"
+      "seven" -> "7"
+      "eight" -> "8"
+      "nine" -> "9"
+    end)
+  end
+
+  defp replace_reverse_words_with_digits(line) do
+    String.replace(line, ~r/eno|owt|eerht|ruof|evif|xis|neves|thgie|enin/, fn
+      "eno" -> "1"
+      "owt" -> "2"
+      "eerht" -> "3"
+      "ruof" -> "4"
+      "evif" -> "5"
+      "xis" -> "6"
+      "neves" -> "7"
+      "thgie" -> "8"
+      "enin" -> "9"
+    end)
+  end
+
+  defp find_digit(line) do
+    line
+    |> String.replace(~r/[^0-9]/, "")
+    |> String.graphemes()
+    |> List.first()
+  end
+end
+```
+
+## Example
+
+```elixir
+142 =
+  Aoc.solve_a("""
+  1abc2
+  pqr3stu8vwx
+  a1b2c3d4e5f
+  treb7uchet
+  """)
+```
+
+```elixir
+281 =
+  Aoc.solve_b("""
+  two1nine
+  eightwothree
+  abcone2threexyz
+  xtwone3four
+  4nineeightseven2
+  zoneight234
+  7pqrstsixteen
+  """)
+```
+
+## Results
+
+```elixir
+Aoc.solve_a(puzzle_input)
+```
+
+```elixir
+Aoc.solve_b(puzzle_input)
+```
